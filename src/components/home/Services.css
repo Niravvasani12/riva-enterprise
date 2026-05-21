@@ -1,0 +1,354 @@
+.services-showcase {
+  position: relative;
+  overflow: hidden;
+  padding: clamp(5rem, 8vw, 8rem) clamp(1rem, 5vw, 5rem);
+  background:
+    radial-gradient(
+      circle at 16% 18%,
+      rgba(34, 197, 94, 0.18),
+      transparent 30%
+    ),
+    radial-gradient(
+      circle at 84% 42%,
+      rgba(16, 185, 129, 0.12),
+      transparent 34%
+    ),
+    #000000;
+  color: #ffffff;
+}
+
+.services-showcase::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+  background-size: 58px 58px;
+  mask-image: radial-gradient(circle at 50% 38%, black, transparent 74%);
+  pointer-events: none;
+}
+
+.services-shell {
+  position: relative;
+  z-index: 1;
+  max-width: 1240px;
+  margin: 0 auto;
+}
+
+.services-heading {
+  max-width: 820px;
+  margin-bottom: clamp(2rem, 5vw, 4rem);
+}
+
+.services-eyebrow {
+  margin: 0 0 0.85rem;
+  color: #86efac;
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 0.34em;
+  text-transform: uppercase;
+}
+
+.services-heading h2,
+.services-info-card h3 {
+  margin: 0;
+  color: #f8fafc;
+  font-size: clamp(2.35rem, 5vw, 5rem);
+  font-weight: 950;
+  letter-spacing: -0.07em;
+  line-height: 0.92;
+}
+
+.services-heading p,
+.services-info-card p,
+.process-card p {
+  color: #cbd5e1;
+  line-height: 1.78;
+}
+
+.services-heading p {
+  max-width: 680px;
+  margin: 1.25rem 0 0;
+}
+
+.services-feature-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(360px, 0.9fr);
+  gap: clamp(1.5rem, 4vw, 4rem);
+  align-items: center;
+}
+
+.services-machine-card,
+.services-info-card,
+.process-card {
+  border: 1px solid rgba(34, 197, 94, 0.16);
+  background:
+    linear-gradient(135deg, rgba(34, 197, 94, 0.12), rgba(3, 7, 18, 0.84) 44%),
+    repeating-linear-gradient(
+      100deg,
+      rgba(255, 255, 255, 0.025) 0 1px,
+      transparent 1px 9px
+    );
+  box-shadow:
+    0 28px 90px rgba(0, 0, 0, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.services-machine-card {
+  position: relative;
+  display: grid;
+  min-height: clamp(380px, 48vw, 560px);
+  place-items: center;
+  overflow: hidden;
+  border-radius: 2.5rem;
+  padding: clamp(1.25rem, 3vw, 3rem);
+}
+
+.machine-orbit {
+  position: absolute;
+  inset: 14%;
+  border-radius: 999px;
+  background:
+    radial-gradient(circle, rgba(34, 197, 94, 0.28), transparent 58%),
+    rgba(34, 197, 94, 0.06);
+  filter: blur(54px);
+}
+
+.services-machine-card img {
+  position: relative;
+  z-index: 2;
+  width: min(100%, 680px);
+  object-fit: contain;
+  filter: drop-shadow(0 34px 56px rgba(0, 0, 0, 0.62));
+}
+
+.machine-badge {
+  position: absolute;
+  z-index: 3;
+  border: 1px solid rgba(34, 197, 94, 0.28);
+  border-radius: 999px;
+  background: rgba(3, 7, 18, 0.78);
+  box-shadow: 0 18px 55px rgba(0, 0, 0, 0.35);
+  color: #bbf7d0;
+  font-size: 0.76rem;
+  font-weight: 900;
+  letter-spacing: 0.16em;
+  padding: 0.72rem 1rem;
+  text-transform: uppercase;
+}
+
+.machine-badge-top {
+  right: clamp(1rem, 3vw, 2.25rem);
+  top: clamp(1rem, 3vw, 2.25rem);
+}
+
+.machine-badge-bottom {
+  bottom: clamp(1rem, 3vw, 2.25rem);
+  left: clamp(1rem, 3vw, 2.25rem);
+}
+
+.services-info-card {
+  border-radius: 2rem;
+  padding: clamp(1.5rem, 3vw, 2.6rem);
+}
+
+.services-info-card h3 {
+  font-size: clamp(2rem, 4vw, 4rem);
+}
+
+.services-info-card p {
+  margin: 1.2rem 0 0;
+}
+
+.machine-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.8rem;
+  margin-top: 1.6rem;
+}
+
+.machine-stat {
+  border: 1px solid rgba(34, 197, 94, 0.18);
+  border-radius: 1.1rem;
+  background: rgba(2, 6, 23, 0.62);
+  padding: 1rem;
+}
+
+.machine-stat strong,
+.machine-stat span {
+  display: block;
+}
+
+.machine-stat strong {
+  color: #86efac;
+  font-size: clamp(1.1rem, 2vw, 1.5rem);
+}
+
+.machine-stat span {
+  margin-top: 0.28rem;
+  color: #cbd5e1;
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+.services-process-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1rem;
+  margin-top: clamp(1.5rem, 4vw, 3rem);
+}
+
+.process-card-wrap {
+  position: relative;
+}
+
+.process-card {
+  overflow: hidden;
+  border-radius: 1.65rem;
+  height: 100%;
+}
+
+.process-card img {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+  filter: saturate(0.9) contrast(1.04);
+  transition:
+    filter 0.45s ease,
+    transform 0.45s ease;
+}
+
+.process-card:hover img {
+  filter: saturate(1.14) contrast(1.08);
+  transform: scale(1.06);
+}
+
+.process-card div {
+  padding: 1.2rem;
+}
+
+.process-card span {
+  color: #86efac;
+  font-size: 0.74rem;
+  font-weight: 950;
+  letter-spacing: 0.22em;
+}
+
+.process-card h3 {
+  margin: 0.45rem 0 0.6rem;
+  color: #ffffff;
+  font-size: 1.16rem;
+}
+
+.process-card p {
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.process-arrow {
+  position: absolute;
+  top: 74px;
+  right: -2.35rem;
+  z-index: 5;
+  display: grid;
+  width: 5.2rem;
+  height: 5.2rem;
+  place-items: center;
+  border-radius: 999px;
+  background: rgba(2, 6, 23, 0);
+
+  pointer-events: none;
+}
+
+.process-arrow svg {
+  width: 3.7rem;
+  height: 3.7rem;
+  overflow: visible;
+  fill: none;
+  stroke: #22c55e;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 24;
+  filter: drop-shadow(0 0 12px rgba(34, 197, 94, 0.7));
+}
+
+@media (max-width: 1024px) {
+  .services-feature-grid,
+  .services-process-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .services-info-card {
+    grid-column: span 2;
+  }
+
+  .process-card-wrap:nth-child(2) .process-arrow {
+    display: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .services-showcase {
+    padding: 5rem 1rem;
+  }
+
+  .services-feature-grid,
+  .services-process-grid,
+  .machine-stat-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .services-info-card {
+    grid-column: auto;
+  }
+
+  .services-machine-card {
+    min-height: 320px;
+    border-radius: 1.8rem;
+  }
+
+  .machine-badge {
+    position: relative;
+    inset: auto;
+    justify-self: start;
+    margin-top: 0.85rem;
+  }
+
+  .machine-badge-top {
+    order: 2;
+  }
+
+  .machine-badge-bottom {
+    order: 3;
+  }
+
+  .process-card img {
+    height: 240px;
+  }
+
+  .process-card-wrap {
+    padding-bottom: 2.75rem;
+  }
+
+  .process-card-wrap:last-child {
+    padding-bottom: 0;
+  }
+
+  .process-arrow {
+    top: auto;
+    right: auto;
+    bottom: -0.8rem;
+    left: 50%;
+    width: 4.5rem;
+    height: 4.5rem;
+    translate: -50% 0;
+    rotate: 90deg;
+  }
+
+  .process-card-wrap:nth-child(2) .process-arrow {
+    display: grid;
+  }
+}

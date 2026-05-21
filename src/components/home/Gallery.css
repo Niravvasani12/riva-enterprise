@@ -1,0 +1,313 @@
+.gallery-parallax {
+  position: relative;
+  height: 100vh;
+  overflow: hidden;
+  background:
+    radial-gradient(
+      circle at 18% 24%,
+      rgba(34, 197, 94, 0.18),
+      transparent 28%
+    ),
+    radial-gradient(
+      circle at 80% 70%,
+      rgba(16, 185, 129, 0.12),
+      transparent 34%
+    ),
+    #020617;
+  color: #f8fafc;
+}
+
+.gallery-parallax * {
+  box-sizing: border-box;
+}
+
+.gallery-copy {
+  position: absolute;
+  left: clamp(1.25rem, 4vw, 4rem);
+  bottom: clamp(1.25rem, 5vw, 4rem);
+  z-index: 4;
+  max-width: 440px;
+  pointer-events: none;
+}
+
+.gallery-eyebrow {
+  margin: 0 0 0.65rem;
+  color: #86efac;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+}
+
+.gallery-copy h2 {
+  margin: 0;
+  color: #22c55e;
+  font-size: clamp(2.3rem, 6vw, 5.4rem);
+  font-weight: 900;
+  line-height: 0.95;
+  text-shadow: 0 18px 60px rgba(0, 0, 0, 0.42);
+}
+
+.gallery-copy p:last-child {
+  margin: 1rem 0 0;
+  color: #cbd5e1;
+  line-height: 1.7;
+}
+
+.gallery-scroll-info {
+  position: absolute;
+  left: clamp(1.25rem, 4vw, 4rem);
+  top: 1.4rem;
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 0;
+  color: #d1fae5;
+  font-size: 0.9rem;
+  font-weight: 700;
+  pointer-events: none;
+}
+
+.gallery-scroll-icon {
+  display: grid;
+  width: 42px;
+  height: 42px;
+  place-items: center;
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  border-radius: 999px;
+  background: rgba(3, 7, 18, 0.62);
+  box-shadow: 0 12px 40px rgba(34, 197, 94, 0.14);
+}
+
+.gallery-scroll-icon svg {
+  width: 25px;
+  fill: currentColor;
+}
+
+.horizontal-scroll-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100vh;
+  height: 100vw;
+  padding: 0 0 10rem;
+  overflow-x: hidden;
+  overflow-y: auto;
+  perspective: 1px;
+  transform: rotate(-90deg) translate3d(0, -100vh, 0);
+  transform-origin: right top;
+  transform-style: preserve-3d;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(34, 197, 94, 0.35) transparent;
+}
+
+.horizontal-scroll-wrapper::-webkit-scrollbar {
+  width: 1px;
+  height: 1px;
+}
+
+.horizontal-scroll-wrapper::-webkit-scrollbar-button {
+  width: 1px;
+  height: 1px;
+}
+
+.img-wrapper {
+  display: flex;
+  min-height: 40vh;
+  align-items: center;
+  justify-content: center;
+  transform: rotate(90deg) translateZ(0.1px) scale(0.9) translateX(0)
+    translateY(-3vh);
+  transform-origin: 50% 50%;
+  transition: min-height 0.8s ease;
+}
+
+.img-wrapper:hover {
+  min-height: 65vh;
+}
+
+.img-wrapper figure {
+  position: relative;
+  display: block;
+  margin: 0;
+  overflow: hidden;
+  border: 1px solid rgba(34, 197, 94, 0.22);
+  border-radius: 1.35rem;
+  background:
+    linear-gradient(135deg, rgba(34, 197, 94, 0.18), rgba(3, 7, 18, 0.92)),
+    #030712;
+  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.48);
+  padding: 1vh;
+}
+
+.img-wrapper img {
+  display: block;
+  max-width: 45vh;
+  max-height: 50vh;
+  border-radius: 1rem;
+  object-fit: cover;
+  filter: saturate(48%) sepia(20%) hue-rotate(48deg);
+  transition:
+    filter 0.45s ease,
+    transform 0.45s ease;
+  vertical-align: top;
+}
+
+.img-wrapper:hover img {
+  filter: none;
+  transform: scale(1.035);
+}
+
+.img-wrapper figcaption {
+  position: absolute;
+  inset: auto 1.25rem 1.25rem;
+  color: #ffffff;
+  font-size: 0.85rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  opacity: 0;
+  transform: translateY(12px);
+  transition:
+    opacity 0.35s ease,
+    transform 0.35s ease;
+  text-shadow: 0 8px 24px rgba(0, 0, 0, 0.75);
+}
+
+.img-wrapper:hover figcaption {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.slower {
+  transform: rotate(90deg) translateZ(-0.2px) scale(1.1) translateX(0%)
+    translateY(-10vh);
+}
+
+.slower1 {
+  transform: rotate(90deg) translateZ(-0.25px) scale(1.05) translateX(0%)
+    translateY(8vh);
+}
+
+.slower2 {
+  transform: rotate(90deg) translateZ(-0.3px) scale(1.3) translateX(0%)
+    translateY(2vh);
+}
+
+.slower-down {
+  transform: rotate(90deg) translateZ(-0.2px) scale(1.1) translateX(0%)
+    translateY(16vh);
+}
+
+.faster {
+  transform: rotate(90deg) translateZ(0.15px) scale(0.8) translateX(0%)
+    translateY(14vh);
+}
+
+.faster1 {
+  transform: rotate(90deg) translateZ(0.05px) scale(0.8) translateX(0%)
+    translateY(10vh);
+}
+
+.fastest {
+  transform: rotate(90deg) translateZ(0.22px) scale(0.7) translateX(-10vh)
+    translateY(-15vh);
+}
+
+.vertical {
+  transform: rotate(90deg) translateZ(-0.15px) scale(1.15) translateX(0%)
+    translateY(0%);
+}
+
+.last {
+  transform: rotate(90deg) translateZ(-0.2px) scale(1.1) translateX(25vh)
+    translateY(-8vh);
+}
+
+.mobile-gallery-clone {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .gallery-parallax {
+    height: auto;
+    min-height: auto;
+    overflow: hidden;
+    padding: 5rem 0;
+  }
+
+  .gallery-copy,
+  .gallery-scroll-info {
+    position: static;
+    pointer-events: auto;
+  }
+
+  .gallery-copy {
+    margin: 0 1rem 2rem;
+  }
+
+  .gallery-scroll-info {
+    display: none;
+  }
+
+  .horizontal-scroll-wrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    width: max-content;
+    height: auto;
+    gap: 1rem;
+    overflow: visible;
+    padding: 0 1rem;
+    perspective: none;
+    transform: none;
+    animation: mobile-gallery-scroll 34s linear infinite;
+  }
+
+  .horizontal-scroll-wrapper:hover {
+    animation-play-state: paused;
+  }
+
+  .img-wrapper,
+  .img-wrapper:hover,
+  .slower,
+  .slower1,
+  .slower2,
+  .slower-down,
+  .faster,
+  .faster1,
+  .fastest,
+  .vertical,
+  .last {
+    display: flex;
+    flex: 0 0 auto;
+    min-height: auto;
+    transform: none;
+  }
+
+  .mobile-gallery-clone {
+    display: flex;
+  }
+
+  .img-wrapper figure {
+    width: min(76vw, 320px);
+    padding: 0.6rem;
+  }
+
+  .img-wrapper img {
+    width: 100%;
+    height: 300px;
+    max-width: none;
+    max-height: none;
+  }
+}
+
+@keyframes mobile-gallery-scroll {
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(calc(-50% - 0.5rem));
+  }
+}
