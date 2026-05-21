@@ -1,10 +1,9 @@
 import express from "express";
 import fs from "fs";
 import path from "path";
-import { createMailerTransport } from "../config/mailer.js";
+import { createMailerTransports } from "../config/mailer.js";
 
 const router = express.Router();
-const transport = createMailerTransport();
 
 const sanitize = (value = "") =>
   value
@@ -53,6 +52,14 @@ const getMailErrorMessage = (mailError) => {
     return "Gmail authentication failed. Please check GMAIL_USER and GMAIL_APP_PASSWORD on Render.";
   }
 
+  if (
+    mailError?.code === "ECONNECTION" ||
+    mailError?.code === "ETIMEDOUT" ||
+    mailError?.code === "ESOCKET"
+  ) {
+    return "Gmail SMTP connection failed on Render. Please redeploy backend and check Gmail App Password.";
+  }
+
   if (mailError?.responseCode >= 500) {
     return "Gmail rejected the email. Please check your Gmail App Password and sender account.";
   }
@@ -67,6 +74,23 @@ const getSafeMailLog = (mailError) => ({
   response: mailError?.response,
   message: mailError?.message,
 });
+
+const sendMailWithFallback = async (mailOptions, label) => {
+  let lastError = null;
+
+  for (const transport of createMailerTransports()) {
+    try {
+      return await transport.sendMail(mailOptions);
+    } catch (mailError) {
+      lastError = mailError;
+      console.warn(`${label} send attempt failed:`, getSafeMailLog(mailError));
+    } finally {
+      transport.close();
+    }
+  }
+
+  throw lastError;
+};
 
 const handleContactRequest = async (req, res) => {
   const payload = req.body || {};
@@ -99,29 +123,33 @@ const handleContactRequest = async (req, res) => {
     process.env.ATTACH_RATE_CARD === "true" && fs.existsSync(rateCardPath);
 
   try {
-    const adminMailResult = await transport.sendMail({
-      from: `"Riva Enterprise Website" <${fromEmail}>`,
-      to: ownerEmail,
-      replyTo: safeEmail,
-      subject: `New Contact Inquiry from ${safeName}`,
-      html: `
-        <div style="font-family: Arial, sans-serif; line-height: 1.6;">
-          <h2>New Contact Form Submission</h2>
-          <p><strong>Name:</strong> ${safeName}</p>
-          <p><strong>Email:</strong> ${sanitize(safeEmail)}</p>
-          <p><strong>Phone:</strong> ${sanitize(safePhone)}</p>
-          <p><strong>Message:</strong><br/>${safeMessage}</p>
-        </div>
-      `,
-    });
+    const adminMailResult = await sendMailWithFallback(
+      {
+        from: `"Riva Enterprise Website" <${fromEmail}>`,
+        to: ownerEmail,
+        replyTo: safeEmail,
+        subject: `New Contact Inquiry from ${safeName}`,
+        html: `
+          <div style="font-family: Arial, sans-serif; line-height: 1.6;">
+            <h2>New Contact Form Submission</h2>
+            <p><strong>Name:</strong> ${safeName}</p>
+            <p><strong>Email:</strong> ${sanitize(safeEmail)}</p>
+            <p><strong>Phone:</strong> ${sanitize(safePhone)}</p>
+            <p><strong>Message:</strong><br/>${safeMessage}</p>
+          </div>
+        `,
+      },
+      "Admin notification email",
+    );
 
     ensureAccepted(adminMailResult, ownerEmail, "Admin notification email");
 
-    const welcomeMailResult = await transport.sendMail({
-      from: `"Riva Enterprise" <${fromEmail}>`,
-      to: safeEmail,
-      subject: "Welcome To Riva Enterprise",
-      text: `Thank you for contacting Riva Enterprise.
+    const welcomeMailResult = await sendMailWithFallback(
+      {
+        from: `"Riva Enterprise" <${fromEmail}>`,
+        to: safeEmail,
+        subject: "Welcome To Riva Enterprise",
+        text: `Thank you for contacting Riva Enterprise.
 
 We have received your inquiry successfully.
 
@@ -132,69 +160,71 @@ We will contact you shortly.
 
 Regards,
 Riva Enterprise`,
-      html: `
-        <div style="margin:0;padding:0;background:#f4f7fb;font-family:Arial,Helvetica,sans-serif;">
-          <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="padding:24px 12px;">
-            <tr>
-              <td align="center">
-                <table role="presentation" width="620" cellspacing="0" cellpadding="0" style="max-width:620px;background:#ffffff;border-radius:14px;overflow:hidden;border:1px solid #dbe7ff;">
-                  <tr>
-                    <td style="padding:22px 24px;background:linear-gradient(90deg,#0b1228,#123d2e);">
-                      <h1 style="margin:0;font-size:28px;letter-spacing:1px;color:#22c55e;font-weight:800;">Welcome To <span style="color:#ffffff;">Riva Enterprise</span></h1>
-                      <p style="margin:10px 0 0 0;font-size:14px;color:#cde6ff;">Premium DTF Printing | Fast Response | Best Support</p>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td style="padding:20px 24px 10px 24px;color:#1f2937;">
-                      <p style="margin:0 0 10px 0;font-size:15px;">Thank you for contacting <b style="color:#0f172a;">Riva Enterprise</b>.</p>
-                      <p style="margin:0 0 10px 0;font-size:15px;">We have received your inquiry successfully.</p>
-                      <p style="margin:0 0 10px 0;font-size:15px;">For price listing and order-related information, please call or WhatsApp: <b style="color:#16a34a;">80005-72371</b></p>
-                      <p style="margin:0;font-size:15px;">We will contact you shortly.</p>
-                    </td>
-                  </tr>
-                  ${
-                    hasRateCardImage
-                      ? `<tr><td style="padding:14px 24px 6px 24px;"><img src="cid:riva-rate-card" alt="Riva DTF Rate Card" style="width:100%;max-width:560px;border-radius:10px;border:1px solid #22c55e;display:block;" /></td></tr>`
-                      : ""
-                  }
-                  <tr>
-                    <td style="padding:10px 24px 8px 24px;">
-                      <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="border-collapse:collapse;border:1px solid #bbf7d0;border-radius:10px;overflow:hidden;">
-                        <tr style="background:#16a34a;">
-                          <th align="left" style="padding:10px 12px;color:#ffffff;font-size:14px;">DTF Printing Range</th>
-                          <th align="left" style="padding:10px 12px;color:#ffffff;font-size:14px;">Rate</th>
-                        </tr>
-                        <tr><td style="padding:10px 12px;border-top:1px solid #dcfce7;color:#0f172a;">2m - 30m</td><td style="padding:10px 12px;border-top:1px solid #dcfce7;color:#16a34a;font-weight:700;">&#8377;170 / mtr</td></tr>
-                        <tr style="background:#f8fffa;"><td style="padding:10px 12px;border-top:1px solid #dcfce7;color:#0f172a;">31m - 50m</td><td style="padding:10px 12px;border-top:1px solid #dcfce7;color:#16a34a;font-weight:700;">&#8377;150 / mtr</td></tr>
-                        <tr><td style="padding:10px 12px;border-top:1px solid #dcfce7;color:#0f172a;">51m - 99m</td><td style="padding:10px 12px;border-top:1px solid #dcfce7;color:#16a34a;font-weight:700;">&#8377;130 / mtr</td></tr>
-                        <tr style="background:#f8fffa;"><td style="padding:10px 12px;border-top:1px solid #dcfce7;color:#0f172a;">100m & Above</td><td style="padding:10px 12px;border-top:1px solid #dcfce7;color:#16a34a;font-weight:700;">&#8377;100 / mtr</td></tr>
-                        <tr><td style="padding:10px 12px;border-top:1px solid #dcfce7;color:#0f172a;">500m & Above</td><td style="padding:10px 12px;border-top:1px solid #dcfce7;color:#16a34a;font-weight:700;">&#8377;90 / mtr</td></tr>
-                      </table>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td style="padding:12px 24px 20px 24px;">
-                      <p style="margin:0 0 6px 0;color:#0f172a;font-size:14px;"><b>Shipping:</b> Extra</p>
-                      <p style="margin:0 0 16px 0;color:#0f172a;font-size:14px;"><b>Bulk Orders:</b> Welcome</p>
-                      <p style="margin:0;color:#475569;font-size:14px;">Regards,<br/><b style="color:#0f172a;">Riva Enterprise</b></p>
-                    </td>
-                  </tr>
-                </table>
-              </td>
-            </tr>
-          </table>
-        </div>
-      `,
-      attachments: hasRateCardImage
-        ? [
-            {
-              filename: "Riva-Rate-Card.png",
-              path: rateCardPath,
-              cid: "riva-rate-card",
-            },
-          ]
-        : [],
-    });
+        html: `
+          <div style="margin:0;padding:0;background:#f4f7fb;font-family:Arial,Helvetica,sans-serif;">
+            <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="padding:24px 12px;">
+              <tr>
+                <td align="center">
+                  <table role="presentation" width="620" cellspacing="0" cellpadding="0" style="max-width:620px;background:#ffffff;border-radius:14px;overflow:hidden;border:1px solid #dbe7ff;">
+                    <tr>
+                      <td style="padding:22px 24px;background:linear-gradient(90deg,#0b1228,#123d2e);">
+                        <h1 style="margin:0;font-size:28px;letter-spacing:1px;color:#22c55e;font-weight:800;">Welcome To <span style="color:#ffffff;">Riva Enterprise</span></h1>
+                        <p style="margin:10px 0 0 0;font-size:14px;color:#cde6ff;">Premium DTF Printing | Fast Response | Best Support</p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style="padding:20px 24px 10px 24px;color:#1f2937;">
+                        <p style="margin:0 0 10px 0;font-size:15px;">Thank you for contacting <b style="color:#0f172a;">Riva Enterprise</b>.</p>
+                        <p style="margin:0 0 10px 0;font-size:15px;">We have received your inquiry successfully.</p>
+                        <p style="margin:0 0 10px 0;font-size:15px;">For price listing and order-related information, please call or WhatsApp: <b style="color:#16a34a;">80005-72371</b></p>
+                        <p style="margin:0;font-size:15px;">We will contact you shortly.</p>
+                      </td>
+                    </tr>
+                    ${
+                      hasRateCardImage
+                        ? `<tr><td style="padding:14px 24px 6px 24px;"><img src="cid:riva-rate-card" alt="Riva DTF Rate Card" style="width:100%;max-width:560px;border-radius:10px;border:1px solid #22c55e;display:block;" /></td></tr>`
+                        : ""
+                    }
+                    <tr>
+                      <td style="padding:10px 24px 8px 24px;">
+                        <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="border-collapse:collapse;border:1px solid #bbf7d0;border-radius:10px;overflow:hidden;">
+                          <tr style="background:#16a34a;">
+                            <th align="left" style="padding:10px 12px;color:#ffffff;font-size:14px;">DTF Printing Range</th>
+                            <th align="left" style="padding:10px 12px;color:#ffffff;font-size:14px;">Rate</th>
+                          </tr>
+                          <tr><td style="padding:10px 12px;border-top:1px solid #dcfce7;color:#0f172a;">2m - 30m</td><td style="padding:10px 12px;border-top:1px solid #dcfce7;color:#16a34a;font-weight:700;">&#8377;170 / mtr</td></tr>
+                          <tr style="background:#f8fffa;"><td style="padding:10px 12px;border-top:1px solid #dcfce7;color:#0f172a;">31m - 50m</td><td style="padding:10px 12px;border-top:1px solid #dcfce7;color:#16a34a;font-weight:700;">&#8377;150 / mtr</td></tr>
+                          <tr><td style="padding:10px 12px;border-top:1px solid #dcfce7;color:#0f172a;">51m - 99m</td><td style="padding:10px 12px;border-top:1px solid #dcfce7;color:#16a34a;font-weight:700;">&#8377;130 / mtr</td></tr>
+                          <tr style="background:#f8fffa;"><td style="padding:10px 12px;border-top:1px solid #dcfce7;color:#0f172a;">100m & Above</td><td style="padding:10px 12px;border-top:1px solid #dcfce7;color:#16a34a;font-weight:700;">&#8377;100 / mtr</td></tr>
+                          <tr><td style="padding:10px 12px;border-top:1px solid #dcfce7;color:#0f172a;">500m & Above</td><td style="padding:10px 12px;border-top:1px solid #dcfce7;color:#16a34a;font-weight:700;">&#8377;90 / mtr</td></tr>
+                        </table>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style="padding:12px 24px 20px 24px;">
+                        <p style="margin:0 0 6px 0;color:#0f172a;font-size:14px;"><b>Shipping:</b> Extra</p>
+                        <p style="margin:0 0 16px 0;color:#0f172a;font-size:14px;"><b>Bulk Orders:</b> Welcome</p>
+                        <p style="margin:0;color:#475569;font-size:14px;">Regards,<br/><b style="color:#0f172a;">Riva Enterprise</b></p>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+            </table>
+          </div>
+        `,
+        attachments: hasRateCardImage
+          ? [
+              {
+                filename: "Riva-Rate-Card.png",
+                path: rateCardPath,
+                cid: "riva-rate-card",
+              },
+            ]
+          : [],
+      },
+      "Welcome email",
+    );
 
     ensureAccepted(welcomeMailResult, safeEmail, "Welcome email");
 
