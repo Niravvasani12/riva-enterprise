@@ -34,7 +34,9 @@ app.use(express.json({ limit: "1mb" }));
 app.get("/api/health", (_req, res) => {
   res.status(200).json({ ok: true, service: "mail-api" });
 });
-
+app.get("/", (_req, res) => {
+  res.send("Backend Running Successfully 🚀");
+});
 app.use("/api", contactRouter);
 
 /* eslint-disable-next-line no-unused-vars */
