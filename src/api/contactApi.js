@@ -1,12 +1,18 @@
 import axios from "axios";
 
+const DEFAULT_API_BASE_URL =
+  typeof window !== "undefined" &&
+  window.location.hostname === "riva-dtf-enterprise.onrender.com"
+    ? "https://riva-enterprise.onrender.com"
+    : "http://localhost:4000";
+
 const normalizeApiBaseUrl = (url = "") =>
   url.trim().replace(/\/+$/, "").replace(/\/api$/i, "");
 
 const API_BASE_URL = normalizeApiBaseUrl(
-  import.meta.env.VITE_API_BASE_URL || "http://localhost:4000",
+  import.meta.env.VITE_API_BASE_URL || DEFAULT_API_BASE_URL,
 );
-const CONTACT_TIMEOUT_MS = Number(import.meta.env.VITE_CONTACT_TIMEOUT_MS) || 30000;
+const CONTACT_TIMEOUT_MS = Number(import.meta.env.VITE_CONTACT_TIMEOUT_MS) || 90000;
 
 const contactClient = axios.create({
   baseURL: API_BASE_URL,

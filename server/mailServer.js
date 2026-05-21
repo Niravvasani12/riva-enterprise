@@ -58,6 +58,7 @@ app.get("/api/health", (_req, res) => {
 });
 
 app.use("/api", contactRouter);
+app.use("/", contactRouter);
 
 app.use((req, res) => {
   res.status(404).json({

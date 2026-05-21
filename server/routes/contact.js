@@ -48,7 +48,7 @@ const ensureAccepted = (mailResult, expectedRecipient, label) => {
   }
 };
 
-router.post("/contact", async (req, res) => {
+const handleContactRequest = async (req, res) => {
   const payload = req.body || {};
   const error = validatePayload(payload);
 
@@ -65,11 +65,12 @@ router.post("/contact", async (req, res) => {
     process.env.OWNER_EMAIL || "rivaenterprise2208@gmail.com",
   ).trim();
   const fromEmail = String(process.env.GMAIL_USER || "").trim();
+  const gmailAppPassword = String(process.env.GMAIL_APP_PASSWORD || "").trim();
 
-  if (!fromEmail) {
+  if (!fromEmail || !gmailAppPassword) {
     return res.status(500).json({
       ok: false,
-      error: "Mail server is not configured properly.",
+      error: "Mail server is not configured. Please check Gmail credentials.",
     });
   }
 
@@ -195,6 +196,8 @@ Riva Enterprise`,
       error: "Unable to send email right now. Please try again.",
     });
   }
-});
+};
+
+router.post("/contact", handleContactRequest);
 
 export default router;
