@@ -1,0 +1,32 @@
+services:
+  - type: web
+    name: riva-enterprise
+    env: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_VERSION
+        value: 22
+      - key: FRONTEND_URL
+        value: https://riva-dtf-enterprise.onrender.com
+      - key: ALLOWED_ORIGINS
+        value: https://riva-dtf-enterprise.onrender.com
+      - key: OWNER_EMAIL
+        value: rivaenterprise2208@gmail.com
+      - key: GMAIL_USER
+        value: rivaenterprise2208@gmail.com
+      - key: GMAIL_APP_PASSWORD
+        sync: false
+
+  - type: static
+    name: riva-dtf-enterprise
+    buildCommand: npm install && npm run build
+    staticPublishPath: dist
+    envVars:
+      - key: NODE_VERSION
+        value: 22
+      - key: VITE_API_BASE_URL
+        value: https://riva-enterprise.onrender.com
+      - key: VITE_CONTACT_TIMEOUT_MS
+        value: 30000

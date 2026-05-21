@@ -1,12 +1,18 @@
 import axios from "axios";
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:4000";
+const normalizeApiBaseUrl = (url = "") =>
+  url.trim().replace(/\/+$/, "").replace(/\/api$/i, "");
+
+const API_BASE_URL = normalizeApiBaseUrl(
+  import.meta.env.VITE_API_BASE_URL || "http://localhost:4000",
+);
 const CONTACT_TIMEOUT_MS = Number(import.meta.env.VITE_CONTACT_TIMEOUT_MS) || 30000;
 
 const contactClient = axios.create({
   baseURL: API_BASE_URL,
   headers: { "Content-Type": "application/json" },
   timeout: CONTACT_TIMEOUT_MS,
+  withCredentials: false,
 });
 
 export const submitContactForm = async (payload) => {
