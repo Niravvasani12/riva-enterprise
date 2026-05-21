@@ -12,12 +12,10 @@ const normalizeApiBaseUrl = (url = "") =>
 const API_BASE_URL = normalizeApiBaseUrl(
   import.meta.env.VITE_API_BASE_URL || DEFAULT_API_BASE_URL,
 );
-const CONTACT_TIMEOUT_MS = Number(import.meta.env.VITE_CONTACT_TIMEOUT_MS) || 90000;
-
 const contactClient = axios.create({
   baseURL: API_BASE_URL,
   headers: { "Content-Type": "application/json" },
-  timeout: CONTACT_TIMEOUT_MS,
+  timeout: 0,
   withCredentials: false,
 });
 
@@ -34,10 +32,6 @@ export const submitContactForm = async (payload) => {
     if (axios.isAxiosError(error)) {
       if (error.response?.data?.error) {
         throw new Error(error.response.data.error);
-      }
-
-      if (error.code === "ECONNABORTED") {
-        throw new Error("Request timed out while sending message. Please try again.");
       }
 
       if (error.code === "ERR_NETWORK") {

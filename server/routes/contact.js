@@ -53,10 +53,6 @@ const getMailErrorMessage = (mailError) => {
     return "Gmail authentication failed. Please check GMAIL_USER and GMAIL_APP_PASSWORD on Render.";
   }
 
-  if (mailError?.code === "ETIMEDOUT" || mailError?.code === "ESOCKET") {
-    return "Mail server timed out. Please try again in a few seconds.";
-  }
-
   if (mailError?.responseCode >= 500) {
     return "Gmail rejected the email. Please check your Gmail App Password and sender account.";
   }
@@ -121,15 +117,11 @@ const handleContactRequest = async (req, res) => {
 
     ensureAccepted(adminMailResult, ownerEmail, "Admin notification email");
 
-    let welcomeMailResult = null;
-    let autoReplySent = false;
-
-    try {
-      welcomeMailResult = await transport.sendMail({
-        from: `"Riva Enterprise" <${fromEmail}>`,
-        to: safeEmail,
-        subject: "Welcome To Riva Enterprise",
-        text: `Thank you for contacting Riva Enterprise.
+    const welcomeMailResult = await transport.sendMail({
+      from: `"Riva Enterprise" <${fromEmail}>`,
+      to: safeEmail,
+      subject: "Welcome To Riva Enterprise",
+      text: `Thank you for contacting Riva Enterprise.
 
 We have received your inquiry successfully.
 
@@ -140,7 +132,7 @@ We will contact you shortly.
 
 Regards,
 Riva Enterprise`,
-        html: `
+      html: `
         <div style="margin:0;padding:0;background:#f4f7fb;font-family:Arial,Helvetica,sans-serif;">
           <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="padding:24px 12px;">
             <tr>
@@ -193,30 +185,26 @@ Riva Enterprise`,
           </table>
         </div>
       `,
-        attachments: hasRateCardImage
-          ? [
-              {
-                filename: "Riva-Rate-Card.png",
-                path: rateCardPath,
-                cid: "riva-rate-card",
-              },
-            ]
-          : [],
-      });
+      attachments: hasRateCardImage
+        ? [
+            {
+              filename: "Riva-Rate-Card.png",
+              path: rateCardPath,
+              cid: "riva-rate-card",
+            },
+          ]
+        : [],
+    });
 
-      ensureAccepted(welcomeMailResult, safeEmail, "Welcome email");
-      autoReplySent = true;
-    } catch (autoReplyError) {
-      console.warn("Contact auto-reply mail warning:", getSafeMailLog(autoReplyError));
-    }
+    ensureAccepted(welcomeMailResult, safeEmail, "Welcome email");
 
     return res.status(200).json({
       ok: true,
       message: "Message sent successfully",
       data: {
         adminMessageId: adminMailResult.messageId,
-        autoReplySent,
-        autoReplyMessageId: welcomeMailResult?.messageId || null,
+        autoReplySent: true,
+        autoReplyMessageId: welcomeMailResult.messageId,
       },
     });
   } catch (mailError) {
