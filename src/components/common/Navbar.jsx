@@ -87,19 +87,19 @@ const Navbar = () => {
           </NavLink>
 
           <NavLink
-            to="/contact"
-            className={navLinkClass}
-            onClick={() => setIsOpen(false)}
-          >
-            Contact
-          </NavLink>
-
-          <NavLink
             to="/price-listing-best"
             className={navLinkClass}
             onClick={() => setIsOpen(false)}
           >
             Price Listing Best
+          </NavLink>
+
+          <NavLink
+            to="/contact"
+            className={navLinkClass}
+            onClick={() => setIsOpen(false)}
+          >
+            Contact
           </NavLink>
 
           {/* WhatsApp inside menu (not top) */}

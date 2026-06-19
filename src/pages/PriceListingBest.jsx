@@ -2,18 +2,22 @@ import { motion as Motion, useReducedMotion } from "framer-motion";
 import { FaRulerCombined, FaShippingFast, FaShoppingBag } from "react-icons/fa";
 
 const rateRows = [
-  { range: "2m - 30m", price: 170 },
-  { range: "31m - 50m", price: 150 },
-  { range: "51m - 99m", price: 130 },
-  { range: "100m & Above", price: 100 },
-  { range: "500m & Above", price: 90 },
+  { range: "2m - 30m", price: 190 },
+  { range: "31m - 50m", price: 160 },
+  { range: "51m - 99m", price: 150 },
+  { range: "100m & Above", price: 120 },
+  { range: "500m & Above", price: 100 },
 ];
 
-const PriceListingBest = () => {
+const PriceListingBest = ({ embedded = false }) => {
   const reducedMotion = useReducedMotion();
 
   const cardVariants = {
-    hidden: { opacity: 0, y: reducedMotion ? 0 : 40, scale: reducedMotion ? 1 : 0.98 },
+    hidden: {
+      opacity: 0,
+      y: reducedMotion ? 0 : 40,
+      scale: reducedMotion ? 1 : 0.98,
+    },
     show: { opacity: 1, y: 0, scale: 1 },
   };
 
@@ -27,7 +31,11 @@ const PriceListingBest = () => {
   };
 
   return (
-    <section className="relative min-h-screen overflow-hidden bg-[#04070d] px-3 py-6 sm:px-6 sm:py-10">
+    <section
+      className={`relative overflow-hidden bg-[#04070d] px-3 py-10 sm:px-6 sm:py-14 ${
+        embedded ? "" : "min-h-screen"
+      }`}
+    >
       <div className="pointer-events-none absolute inset-0">
         <Motion.div
           className="absolute -left-20 top-10 h-40 w-40 rounded-full bg-[#22345f]/30 blur-3xl"
@@ -73,7 +81,12 @@ const PriceListingBest = () => {
           </p>
         </div>
 
-        <Motion.div initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.3 }} className="pb-4">
+        <Motion.div
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, amount: 0.3 }}
+          className="pb-4"
+        >
           {rateRows.map((row, index) => (
             <Motion.div
               key={row.range}
@@ -84,11 +97,15 @@ const PriceListingBest = () => {
               <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#22c55e] text-base text-black sm:h-12 sm:w-12 sm:text-xl">
                 <FaRulerCombined />
               </div>
-              <p className="text-xl font-extrabold tracking-wide text-white sm:text-4xl">{row.range}</p>
+              <p className="text-xl font-extrabold tracking-wide text-white sm:text-4xl">
+                {row.range}
+              </p>
               <p className="whitespace-nowrap text-2xl font-black text-[#22c55e] sm:text-5xl">
                 {"\u20B9"}
                 {row.price}
-                <span className="ml-1 text-lg font-bold text-white sm:text-3xl">/ mtr</span>
+                <span className="ml-1 text-lg font-bold text-white sm:text-3xl">
+                  / mtr
+                </span>
               </p>
             </Motion.div>
           ))}
@@ -102,18 +119,26 @@ const PriceListingBest = () => {
           className="mx-3 mb-4 flex items-center justify-center gap-3 rounded-xl border border-dashed border-[#22c55e] bg-black px-3 py-3 sm:mx-4 sm:py-4"
         >
           <FaShippingFast className="text-3xl text-white sm:text-4xl" />
-          <p className="text-center text-xl font-black uppercase tracking-wide text-white sm:text-3xl">Shipping Extra</p>
+          <p className="text-center text-xl font-black uppercase tracking-wide text-white sm:text-3xl">
+            Shipping Extra
+          </p>
         </Motion.div>
 
         <Motion.div
           whileInView={{ opacity: 1, y: 0, scale: 1 }}
-          initial={{ opacity: 0, y: reducedMotion ? 0 : 24, scale: reducedMotion ? 1 : 0.98 }}
+          initial={{
+            opacity: 0,
+            y: reducedMotion ? 0 : 24,
+            scale: reducedMotion ? 1 : 0.98,
+          }}
           viewport={{ once: true, amount: 0.8 }}
           transition={{ duration: 0.5 }}
           className="mx-3 mb-5 flex items-center justify-center gap-2 rounded-md bg-gradient-to-r from-[#22c55e] to-[#16a34a] px-2 py-3 sm:mx-4 sm:mb-6 sm:gap-3 sm:px-3"
         >
           <FaShoppingBag className="text-xl text-black sm:text-2xl" />
-          <p className="text-center text-xl font-black uppercase tracking-wide text-black sm:text-3xl">Bulk Orders Welcome</p>
+          <p className="text-center text-xl font-black uppercase tracking-wide text-black sm:text-3xl">
+            Bulk Orders Welcome
+          </p>
         </Motion.div>
       </Motion.div>
     </section>
