@@ -5,8 +5,8 @@ const rateRows = [
   { range: "2m - 30m", price: 190 },
   { range: "31m - 50m", price: 160 },
   { range: "51m - 99m", price: 150 },
-  { range: "100m & Above", price: 120 },
-  { range: "500m & Above", price: 100 },
+  { range: "100m & Above", price: 130 },
+  { range: "500m & Above", price: 120 },
 ];
 
 const PriceListingBest = ({ embedded = false }) => {
