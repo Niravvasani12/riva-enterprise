@@ -43,7 +43,11 @@ const Footer = () => {
 
         <div>
           <h3 className="mb-4 text-lg font-semibold text-white">Contact Us</h3>
-          <p className="text-sm">Surat, Gujarat</p>
+          <p className="text-sm">
+            Shop no 2, Society vibhag-2, Godavari Park, Punagam Road,
+            Pramukhchhaya, Pramukhchaya Society Part D, Yoginagar Society,
+            Surat, Gujarat 395010
+          </p>
           <p className="text-sm">{CONTACT_PHONE_DISPLAY}</p>
           <p className="text-sm">{CONTACT_EMAIL}</p>
 
