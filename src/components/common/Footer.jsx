@@ -1,4 +1,4 @@
-import { FaFacebookF, FaInstagram, FaWhatsapp } from "react-icons/fa";
+import { FaFacebookF, FaGoogle, FaInstagram, FaWhatsapp } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import {
   CONTACT_EMAIL,
@@ -55,7 +55,6 @@ const Footer = () => {
             <a href="#" className="hover:text-green-400" aria-label="Facebook">
               <FaFacebookF />
             </a>
-
             <a
               href="https://www.instagram.com/riva_dtf_printing_solution?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw=="
               target="_blank"
@@ -73,6 +72,17 @@ const Footer = () => {
               aria-label="WhatsApp"
             >
               <FaWhatsapp />
+            </a>{" "}
+            <a
+              href={
+                "https://www.google.com/search?q=riva+dtf+printing+solution&sca_esv=eaca09e5d8679415&rlz=1C1ONGR_enIN1079IN1080&biw=1536&bih=695&sxsrf=APpeQnvjkaRejk9ft9rERyYgtmnoovWh_g%3A1782794716262&ei=3ElDaqfQD-75seMPnKeUsQw&oq=RIVA&gs_lp=Egxnd3Mtd2l6LXNlcnAiBFJJVkEqAggAMgQQIxgnMgQQIxgnMgQQIxgnMg0QABiABBiKBRhDGLEDMg0QABiABBiKBRhDGLEDMgsQLhiABBixAxiDATIIEC4YgAQYsQMyDhAAGIAEGIoFGLEDGIMBMg0QABiABBiKBRhDGLEDMgoQABiABBiKBRhDSLgaULYHWM4KcAN4AJABAJgBiAKgAa8GqgEFMC4yLjK4AQPIAQD4AQGYAgSgAsIGwgILEAAYgAQYigUYkQLCAgoQLhiABBiKBRhDwgIQEC4YgAQYigUYQxjHARjRA8ICEBAAGIAEGIoFGEMYsQMYgwHCAhYQLhiABBiKBRhDGLEDGIMBGMcBGNEDmAMAiAYBkgcFMC4yLjKgB-0tsgcFMC4yLjK4B8IGwgcFMC4xLjPIBw6ACAE&sclient=gws-wiz-serp"
+              }
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-green-400"
+              aria-label="Google"
+            >
+              <FaGoogle />
             </a>
           </div>
         </div>
