@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://rivaenterprise.com/sitemap.xml
+Sitemap: https://riva-dtf-enterprise.onrender.com/sitemap.xml

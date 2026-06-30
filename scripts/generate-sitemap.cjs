@@ -1,7 +1,9 @@
 const fs = require("fs");
 const path = require("path");
 
-const siteUrl = (process.env.VITE_SITE_URL || "https://rivaenterprise.com")
+const siteUrl = (
+  process.env.VITE_SITE_URL || "https://riva-dtf-enterprise.onrender.com"
+)
   .replace(/\/$/, "");
 
 const routes = [
