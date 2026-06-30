@@ -1,5 +1,6 @@
 import { motion as Motion, useReducedMotion } from "framer-motion";
 import { FaRulerCombined, FaShippingFast, FaShoppingBag } from "react-icons/fa";
+import SEO from "../components/common/SEO";
 
 const rateRows = [
   { range: "2m - 30m", price: 190 },
@@ -31,11 +32,45 @@ const PriceListingBest = ({ embedded = false }) => {
   };
 
   return (
-    <section
-      className={`relative overflow-hidden bg-[#04070d] px-3 py-10 sm:px-6 sm:py-14 ${
-        embedded ? "" : "min-h-screen"
-      }`}
-    >
+    <>
+      {!embedded && (
+        <SEO
+          title="DTF Printing Rate Card"
+          description="View Riva Enterprise DTF printing rates in Surat. Check per meter pricing for small, bulk, and reseller DTF print orders with shipping support."
+          keywords={[
+            "DTF printing rate",
+            "DTF printing price Surat",
+            "Riva Enterprise price list",
+            "DTF print rate card",
+            "bulk DTF printing price",
+          ]}
+          structuredData={(siteUrl, canonicalUrl) => ({
+            "@context": "https://schema.org",
+            "@type": "Service",
+            name: "DTF Printing Rate Card",
+            provider: {
+              "@type": "LocalBusiness",
+              name: "Riva Enterprise",
+              image: `${siteUrl}/Riva.png`,
+            },
+            areaServed: "India",
+            url: canonicalUrl,
+            offers: rateRows.map((row) => ({
+              "@type": "Offer",
+              name: `${row.range} DTF printing`,
+              price: row.price,
+              priceCurrency: "INR",
+              unitText: "meter",
+              availability: "https://schema.org/InStock",
+            })),
+          })}
+        />
+      )}
+      <section
+        className={`relative overflow-hidden bg-[#04070d] px-3 py-10 sm:px-6 sm:py-14 ${
+          embedded ? "" : "min-h-screen"
+        }`}
+      >
       <div className="pointer-events-none absolute inset-0">
         <Motion.div
           className="absolute -left-20 top-10 h-40 w-40 rounded-full bg-[#22345f]/30 blur-3xl"
@@ -141,7 +176,8 @@ const PriceListingBest = ({ embedded = false }) => {
           </p>
         </Motion.div>
       </Motion.div>
-    </section>
+      </section>
+    </>
   );
 };
 

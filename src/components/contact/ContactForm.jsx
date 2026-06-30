@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { motion as Motion } from "framer-motion";
-import { CONTACT_PHONE } from "../../utils/constants";
+import { submitContactForm } from "../../api/contactApi";
 
 const initialForm = {
   name: "",
@@ -29,21 +29,6 @@ const validateForm = (form) => {
   }
 
   return errors;
-};
-
-const createWhatsAppLink = (form) => {
-  const message = [
-    "Hello Riva Enterprise,",
-    "",
-    "I want to contact you for DTF printing.",
-    "",
-    `Name: ${form.name.trim()}`,
-    `Email: ${form.email.trim().toLowerCase()}`,
-    `Phone: ${form.phone.replace(/\D/g, "")}`,
-    `Message: ${form.message.trim()}`,
-  ].join("\n");
-
-  return `https://wa.me/91${CONTACT_PHONE}?text=${encodeURIComponent(message)}`;
 };
 
 const ContactForm = () => {
@@ -79,14 +64,24 @@ const ContactForm = () => {
     setStatus("sending");
 
     try {
-      window.open(createWhatsAppLink(form), "_blank", "noopener,noreferrer");
+      const response = await submitContactForm({
+        name: form.name.trim(),
+        email: form.email.trim().toLowerCase(),
+        phone: form.phone.replace(/\D/g, ""),
+        message: form.message.trim(),
+      });
+
+      if (!response?.ok) {
+        throw new Error(response?.error || "Failed to send message. Please try again.");
+      }
+
       setStatus("success");
-      setFeedback("WhatsApp opened with your message. Please tap Send to submit it.");
+      setFeedback(response?.message || "Message sent successfully");
       setForm(initialForm);
       setErrors({});
     } catch (error) {
       setStatus("error");
-      setFeedback(error?.message || "Could not open WhatsApp. Please try again.");
+      setFeedback(error?.message || "Failed to send message. Please try again.");
     }
   };
 
@@ -169,7 +164,7 @@ const ContactForm = () => {
             disabled={isLoading}
             className="w-full rounded-lg bg-green-500 px-6 py-3 font-medium text-black transition hover:bg-green-400 disabled:cursor-not-allowed disabled:bg-green-700"
           >
-            {isLoading ? "Opening WhatsApp..." : "Send on WhatsApp"}
+            {isLoading ? "Sending..." : "Submit"}
           </button>
         </form>
 
